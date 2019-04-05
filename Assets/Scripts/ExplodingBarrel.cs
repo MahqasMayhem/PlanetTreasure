@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExplodingBarrel.cs : MonoBehaviour
+public class ExplodingBarrel : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

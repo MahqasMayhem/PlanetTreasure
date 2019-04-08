@@ -924,7 +924,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveRadius: 0
-  speed: 0
+  viewRadius: 25
+  speed: 1
 --- !u!50 &2164433943412739892
 Rigidbody2D:
   serializedVersion: 4

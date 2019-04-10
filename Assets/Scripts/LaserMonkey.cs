@@ -16,6 +16,7 @@ public class LaserMonkey : MonoBehaviour
     private GameObject player;
     private float spriteScaleX, range;
     private bool lockAim, isAiming;
+    private Vector3 origin;
 
     #endregion
     // Start is called before the first frame update
@@ -24,9 +25,11 @@ public class LaserMonkey : MonoBehaviour
         direction = 1;
         Weapon = transform.Find("Weapon");
         rb = GetComponent<Rigidbody2D>();
-        spriteScaleX = this.transform.localScale.x;
+        //spriteScaleX = this.transform.localScale.x;
         player = GameObject.Find("Player");
         lockAim = false;
+        isAiming = false;
+        origin = this.transform.position;
 
     }
 
@@ -39,24 +42,53 @@ public class LaserMonkey : MonoBehaviour
             {
                 TargetEntity(player);
             }
-            else
+            else if (viewRadius > 0)
             {
                 TargetEntity(viewRadius);
+            }
+            else
+            {
+                Debug.LogError("Error: Value out of Range", this);
             }
         }
 
     }
 
-    #region Control Functions
-    private void Move() //TODO# Actually write this method
+    void FixedUpdate()
     {
-        rb.velocity = new Vector2(speed * direction, rb.velocity.y);
-
+        if (isAiming == false)
+        {
+            Move();
+            Debug.Log("Trigger Move");
+        }
+        else if (isAiming == true)
+        {
+            isAiming = !isAiming;
+        }
     }
-    private void ChangeDirection(int facing) //TODO# flip the sprite and weapon together. 
+
+    #region Control Functions
+
+    private void Move()
+    {
+        Debug.Log("move.");
+        if (moveRadius > this.transform.position.x * direction - origin.x)
+            {
+                rb.velocity = new Vector2(speed * direction, rb.velocity.y);
+            }
+        else
+            {
+            ChangeDirection(direction * -1);
+            
+            }
+
+        }
+        
+
+    
+    private void ChangeDirection(int facing)
     {
         direction = facing;
-        //this.GetComponent<SpriteRenderer>().flipX = !this.GetComponent<SpriteRenderer>().flipX;
         if (facing == 1)
         {
             this.transform.localScale = new Vector3(1.771533f, this.transform.localScale.y, this.transform.localScale.z);
@@ -65,10 +97,11 @@ public class LaserMonkey : MonoBehaviour
         {
             this.transform.localScale = new Vector3(-1.771533f, this.transform.localScale.y, this.transform.localScale.z);
         }
+        
     }
 
 
-    private void TargetEntity(GameObject entity) //Overloaded function. Will only be used if viewRadius is 0
+    private void TargetEntity(GameObject entity) //Will only be used if viewRadius is 0
     {
 
         isAiming = true;
@@ -85,13 +118,13 @@ public class LaserMonkey : MonoBehaviour
         
     }
 
-    private void TargetEntity(float radius) //Overloaded function. Will be used if viewRadius is not 0
+    private void TargetEntity(float radius) //Will be used if viewRadius is not 0
     {
-        Debug.Log("Using overloaded control method", this);
 
         if (this.GetComponent<SpriteRenderer>().isVisible == false && isAiming == true)
         {
             isAiming = false;
+            
         }
        else if (CalcRange(player, range) < viewRadius)
         {

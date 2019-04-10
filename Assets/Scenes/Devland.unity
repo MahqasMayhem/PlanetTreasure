@@ -923,9 +923,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bda92dae14c5f4b469338c0d52e062fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveRadius: 0
-  viewRadius: 25
-  speed: 1
+  moveRadius: 10
+  viewRadius: 4
+  speed: 4
 --- !u!50 &2164433943412739892
 Rigidbody2D:
   serializedVersion: 4

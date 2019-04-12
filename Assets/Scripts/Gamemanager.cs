@@ -32,6 +32,11 @@ public class Gamemanager : MonoBehaviour
 
     #region Public Functions
 
+    public void updateCollectibles(GameObject newGem)
+    {
+
+    }
+
     public void DamageTarget(GameObject entity)
     {
 

@@ -38,6 +38,27 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 1004400957
+    locked: 0
+  - name: BackgroundSprites
+    uniqueID: 3048838471
+    locked: 0
+  - name: Wall
+    uniqueID: 1675165425
+    locked: 0
+  - name: Decoration
+    uniqueID: 3516465515
+    locked: 0
+  - name: Entities
+    uniqueID: 1787100467
+    locked: 0
+  - name: NPCs
+    uniqueID: 828474753
+    locked: 0
+  - name: Player
+    uniqueID: 122736453
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

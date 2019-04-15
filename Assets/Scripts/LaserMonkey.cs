@@ -140,11 +140,10 @@ public class LaserMonkey : MonoBehaviour
         return range;
     }
 
-    private void FireBeam() //TODO: Begin fire sequence. Flash beam, countdown to fire, then fire. Raycast to calculate hit. Reset lockAim and isFiring
+    private void FireBeam(GameObject entity) //TODO: Begin fire sequence. Flash beam, countdown to fire, then fire. Raycast to calculate hit. Reset lockAim and isFiring
     {
         lockAim = true;
         Debug.Log("Firing laser!", this);
-
     }
     #endregion
 }

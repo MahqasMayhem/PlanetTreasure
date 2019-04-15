@@ -144,10 +144,6 @@ public class LaserMonkey : MonoBehaviour
     {
         lockAim = true;
         Debug.Log("Firing laser!", this);
-        if (Physics.Raycast(Weapon.transform.position, entity.transform.position - Weapon.transform.position, out hit)
-            {
-
-        }
     }
     #endregion
 }

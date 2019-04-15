@@ -6,26 +6,30 @@ using UnityStandardAssets.CrossPlatformInput;
 public class Player : MonoBehaviour
 {
     #region Variables
-    private GameObject character;
-    private bool characterJump;
+
+    private Gamemanager GameManager;
     #endregion
 
     // Start is called before the first frame update
     void Start()
     {
-        character = GameObject.Find("2DPlayer");
-
+        GameManager = GameObject.Find("GameManager").GetComponent<Gamemanager>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnTriggerEnter2D(Collider2D other)
     {
-        characterJump = CrossPlatformInputManager.GetButtonDown("Jump");
-
-    }
-
-    void FixedUpdate()
-    {
-
+        if (other.gameObject.CompareTag("Unique Pick Up"))
+        {
+            foreach (GameObject collectible in GameObject.FindGameObjectsWithTag("Unique Pick Up"))
+            {
+                if (other.gameObject == collectible)
+                {
+                    Debug.Log("Player Obtained a unique item!", collectible);
+                    GameManager.UpdateCollectibles(collectible);
+                    collectible.SetActive(false);
+                }
+                else Debug.Log("Nice try");
+            }
+        }
     }
 }

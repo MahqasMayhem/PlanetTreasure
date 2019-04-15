@@ -9,8 +9,9 @@ public class Gamemanager : MonoBehaviour
     protected float gravity, playerSpeed, enemySpeed;
     protected int lives;
 
-    private int score;
-    private ArrayList sceneTargets;
+    public int score;
+
+    private List<GameObject> uniqueCollectibles;
     #endregion
 
     // Start is called before the first frame update
@@ -32,9 +33,14 @@ public class Gamemanager : MonoBehaviour
 
     #region Public Functions
 
-    public void updateCollectibles(GameObject newGem)
+    public void UpdateCollectibles(GameObject newGem)
     {
+        uniqueCollectibles.Add(newGem);
+        if (uniqueCollectibles.Count >= 5)
+        {
+            Debug.Log("All collectibles acquired");
 
+        }
     }
 
     public void DamageTarget(GameObject entity)

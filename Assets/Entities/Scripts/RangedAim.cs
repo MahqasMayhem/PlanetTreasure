@@ -2,66 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangedPatrol : StateMachineBehaviour
+public class RangedAim : StateMachineBehaviour
 {
+    private float viewRadius,xScale;
     private int direction;
-    private Vector3 origin;
-    private float moveRadius, speed, viewRadius, xScale;
-    private Rigidbody2D rb;
     private GameObject go,player;
     private Transform Weapon;
-    private bool  isFiring;
+    private bool isAiming, isFiring;
+
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         go = animator.gameObject;
         player = GameObject.Find("Player");
-        Weapon = go.transform.Find("Weapon");
-        origin = go.GetComponent<RangedEnemy>().origin;
-        moveRadius = go.GetComponent<RangedEnemy>().moveRadius;
-        viewRadius = go.gameObject.GetComponent<RangedEnemy>().viewRadius;
-        speed = go.GetComponent<RangedEnemy>().speed;
-        rb = go.GetComponent<Rigidbody2D>();
-        xScale = go.transform.localScale.x;
-        
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        isFiring = animator.GetBool("isFiring");
-
-        if (Weapon.GetComponent<SpriteRenderer>().isVisible == true && isFiring == false)
-        {
-            
-            if (viewRadius == 0)
-            {
-                animator.SetBool("isAiming", true);
-            }
-            else if (CalcRange(player, viewRadius) < viewRadius)
-            {
-                animator.SetBool("isAiming", true);
-            }
-            else
-            {
-                Debug.LogError("Error: Value out of Range", this);
-            }
-        }
+       
     }
 
-    private void Move()
-    {
-        if (moveRadius > go.transform.position.x * direction - origin.x)
-        {
-            rb.velocity = new Vector2(speed * direction, rb.velocity.y);
-        }
-        else
-        {
-            ChangeDirection(direction * -1);
-
-        }
-    }
     private void ChangeDirection(int facing)
     {
         direction = facing;
@@ -75,6 +37,38 @@ public class RangedPatrol : StateMachineBehaviour
         }
 
     }
+
+
+        private void TargetEntity(GameObject entity) //Will only be used if viewRadius is 0
+        {
+
+            isAiming = true;
+            Weapon.transform.right = entity.transform.position - Weapon.transform.position;
+            if (entity.transform.position.x < go.transform.position.x)
+            {
+                ChangeDirection(-1);
+            }
+            else
+            {
+                ChangeDirection(1);
+            }
+
+
+        }
+
+        private void TargetEntity(float radius) //Will be used if viewRadius is not 0
+        {
+
+            if (go.GetComponent<SpriteRenderer>().isVisible == false && isAiming == true)
+            {
+                isAiming = false;
+
+            }
+            else if (CalcRange(player, viewRadius) < viewRadius)
+            {
+                TargetEntity(player);
+            }
+        }
 
     private float CalcRange(GameObject entity, float range)
     {

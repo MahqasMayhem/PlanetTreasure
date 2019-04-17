@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LaserMonkey : MonoBehaviour
+public class RangedEnemy : MonoBehaviour
 {
     #region Variables
-    public float moveRadius;
-    public float viewRadius;
-    public float speed;
+    public float moveRadius,viewRadius, speed;
+    public Vector3 origin;
 
     private int direction;
     private Transform Weapon;
@@ -16,7 +15,7 @@ public class LaserMonkey : MonoBehaviour
     private GameObject player;
     private float spriteScaleX, range;
     private bool lockAim, isAiming;
-    private Vector3 origin,rayStart;
+    private Vector3 rayStart;
 
     #endregion
     // Start is called before the first frame update
@@ -72,6 +71,7 @@ public class LaserMonkey : MonoBehaviour
 
     private void Move()
     {
+        Debug.Log("move.");
         if (moveRadius > this.transform.position.x * direction - origin.x)
             {
                 rb.velocity = new Vector2(speed * direction, rb.velocity.y);

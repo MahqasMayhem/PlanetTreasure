@@ -32,7 +32,7 @@ public class RangedPatrol : StateMachineBehaviour
     {
         isFiring = animator.GetBool("isFiring");
 
-        if (Weapon.GetComponent<SpriteRenderer>().isVisible == true && isFiring == false)
+        if (go.GetComponent<SpriteRenderer>().isVisible == true && isFiring == false)
         {
             
             if (viewRadius == 0)

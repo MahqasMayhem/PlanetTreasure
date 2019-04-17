@@ -7,8 +7,9 @@ public class RangedAim : StateMachineBehaviour
     private float viewRadius,xScale;
     private int direction;
     private GameObject go,player;
-    private Transform Weapon;
-    private bool isAiming, isFiring;
+    private Transform Weapon,Head;
+    private bool isAiming, isFiring, timerFire;
+    private RangedEnemy enemyScript;
 
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -16,12 +17,35 @@ public class RangedAim : StateMachineBehaviour
     {
         go = animator.gameObject;
         player = GameObject.Find("Player");
+        viewRadius = player.GetComponent <RangedEnemy> ().viewRadius;
+        Weapon = animator.transform.Find("Weapon");
+        Head = animator.transform.Find("Head");
+        xScale = player.transform.localScale.x;
+        isAiming = animator.GetBool("isAiming");
+        isFiring = animator.GetBool("isFiring");
+        timerFire = false;
+        enemyScript = go.gameObject.GetComponent<RangedEnemy>();
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-       
+        if (go.GetComponent<SpriteRenderer>().isVisible == false && isFiring == false)
+        {
+            animator.SetBool("isAiming", false);
+        }
+
+        else if (viewRadius == 0)
+        {
+
+
+            TargetEntity(player);
+        }
+        else
+        {
+            TargetEntity(viewRadius);
+        }
+    
     }
 
     private void ChangeDirection(int facing)
@@ -42,8 +66,15 @@ public class RangedAim : StateMachineBehaviour
         private void TargetEntity(GameObject entity) //Will only be used if viewRadius is 0
         {
 
-            isAiming = true;
+            
             Weapon.transform.right = entity.transform.position - Weapon.transform.position;
+        Head.transform.right = entity.transform.position - Head.transform.position;
+        if (timerFire == false)
+        {
+            timerFire = true;
+            Debug.Log("Preparing to fire!", go);
+            enemyScript.Invoke("Fire", 4f);
+        }
             if (entity.transform.position.x < go.transform.position.x)
             {
                 ChangeDirection(-1);
@@ -69,6 +100,8 @@ public class RangedAim : StateMachineBehaviour
                 TargetEntity(player);
             }
         }
+
+
 
     private float CalcRange(GameObject entity, float range)
     {

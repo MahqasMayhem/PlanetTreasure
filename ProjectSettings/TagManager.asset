@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: [Unique Pick Up]
+  tags:
+  - Unique Pick Up
+  - Entity
   layers:
   - Default
   - TransparentFX

@@ -4,17 +4,84 @@ using UnityEngine;
 
 public class RangedPatrol : StateMachineBehaviour
 {
+    private int direction;
+    private Vector3 origin;
+    private float moveRadius, speed, viewRadius;
+    private Rigidbody2D rb;
+    private GameObject go,player;
+    private Transform Weapon;
+    private bool isAiming, isFiring;
+
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        go = animator.gameObject;
+        player = GameObject.Find("Player");
+        Weapon = go.transform.Find("Weapon");
+        origin = go.GetComponent<RangedEnemy>().origin;
+        moveRadius = go.GetComponent<RangedEnemy>().moveRadius;
+        viewRadius = go.gameObject.GetComponent<RangedEnemy>().viewRadius;
+        speed = go.GetComponent<RangedEnemy>().speed;
+        rb = go.GetComponent<Rigidbody2D>();
+        
+    }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-    //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        isAiming = animator.GetBool("isAiming");
+        isFiring = animator.GetBool("isFiring");
+
+        if (Weapon.GetComponent<SpriteRenderer>().isVisible == true && isFiring == false)
+        {
+            CalcRange(player, viewRadius);
+            if (viewRadius == 0)
+            {
+                animator.SetBool("isAiming", true);
+            }
+            else if (viewRadius > 0)
+            {
+                TargetEntity(viewRadius);
+            }
+            else
+            {
+                Debug.LogError("Error: Value out of Range", this);
+            }
+        }
+    }
+
+    private void Move()
+    {
+        if (moveRadius > go.transform.position.x * direction - origin.x)
+        {
+            rb.velocity = new Vector2(speed * direction, rb.velocity.y);
+        }
+        else
+        {
+            ChangeDirection(direction * -1);
+
+        }
+    }
+    private void ChangeDirection(int facing)
+    {
+        direction = facing;
+        if (facing == 1)
+        {
+            go.transform.localScale = new Vector3(1.771533f, go.transform.localScale.y, go.transform.localScale.z);
+        }
+        else
+        {
+            go.transform.localScale = new Vector3(-1.771533f, go.transform.localScale.y, go.transform.localScale.z);
+        }
+
+    }
+
+    private float CalcRange(GameObject entity, float range)
+    {
+        range = Vector2.Distance(entity.transform.position, go.transform.position);
+        //Debug.Log(range);
+        return range;
+    }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

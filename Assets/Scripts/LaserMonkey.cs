@@ -16,7 +16,7 @@ public class LaserMonkey : MonoBehaviour
     private GameObject player;
     private float spriteScaleX, range;
     private bool lockAim, isAiming;
-    private Vector3 origin;
+    private Vector3 origin,rayStart;
 
     #endregion
     // Start is called before the first frame update
@@ -27,6 +27,7 @@ public class LaserMonkey : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         //spriteScaleX = this.transform.localScale.x;
         player = GameObject.Find("Player");
+
         lockAim = false;
         isAiming = false;
         origin = this.transform.position;
@@ -144,6 +145,23 @@ public class LaserMonkey : MonoBehaviour
     {
         lockAim = true;
         Debug.Log("Firing laser!", this);
+        RaycastHit hit;
+        rayStart = transform.Find("rayOrigin").position;
+
+        if (Physics.Raycast(rayStart, Weapon.transform.right, out hit, Mathf.Infinity))
+        {
+            OnHitObject(hit);
+
+        }
+    }
+
+    private void OnHitObject(RaycastHit hit)
+    {
+        Debug.Log("Laser hit:" + hit.transform.gameObject);
+        if (hit.transform.gameObject.CompareTag("Player") || hit.transform.gameObject.CompareTag("Entity"))
+        {
+            hit.transform.gameObject.BroadcastMessage("OnDamage");
+        }
     }
     #endregion
 }

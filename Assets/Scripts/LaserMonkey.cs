@@ -19,6 +19,7 @@ public class LaserMonkey : MonoBehaviour
     private Vector3 origin,rayStart;
 
     #endregion
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,13 +32,14 @@ public class LaserMonkey : MonoBehaviour
         lockAim = false;
         isAiming = false;
         origin = this.transform.position;
+        spriteScaleX = player.transform.localScale.x;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Weapon.GetComponent<SpriteRenderer>().isVisible == true && lockAim != true)
+        if (player.GetComponent<SpriteRenderer>().isVisible == true && lockAim != true)
         {
             if (viewRadius == 0)
             {
@@ -91,11 +93,11 @@ public class LaserMonkey : MonoBehaviour
         direction = facing;
         if (facing == 1)
         {
-            this.transform.localScale = new Vector3(1.771533f, this.transform.localScale.y, this.transform.localScale.z);
+            this.transform.localScale = new Vector3(spriteScaleX, this.transform.localScale.y, this.transform.localScale.z);
         }
         else
         {
-            this.transform.localScale = new Vector3(-1.771533f, this.transform.localScale.y, this.transform.localScale.z);
+            this.transform.localScale = new Vector3(spriteScaleX * -1, this.transform.localScale.y, this.transform.localScale.z);
         }
         
     }

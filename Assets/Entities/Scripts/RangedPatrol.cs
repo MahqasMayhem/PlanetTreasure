@@ -10,12 +10,13 @@ public class RangedPatrol : StateMachineBehaviour
     private Rigidbody2D rb;
     private GameObject go,player;
     private Transform Weapon;
-    private bool  isFiring;
+    private bool  isFiring, isAiming;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         go = animator.gameObject;
+        direction = 1;
         player = GameObject.Find("Player");
         Weapon = go.transform.Find("Weapon");
         origin = go.GetComponent<RangedEnemy>().origin;
@@ -33,13 +34,13 @@ public class RangedPatrol : StateMachineBehaviour
         isFiring = animator.GetBool("isFiring");
 
         if (go.GetComponent<SpriteRenderer>().isVisible == true && isFiring == false)
-        {
+           {
             
             if (viewRadius == 0)
             {
                 animator.SetBool("isAiming", true);
             }
-            else if (CalcRange(player, viewRadius) < viewRadius)
+            else if (CalcRange(player) < viewRadius)
             {
                 animator.SetBool("isAiming", true);
             }
@@ -47,6 +48,11 @@ public class RangedPatrol : StateMachineBehaviour
             {
                 Debug.LogError("Error: Value out of Range", this);
             }
+        }
+        isAiming = animator.GetBool("isAiming");
+        if (!isAiming)
+        {
+            Move();
         }
     }
 
@@ -76,9 +82,9 @@ public class RangedPatrol : StateMachineBehaviour
 
     }
 
-    private float CalcRange(GameObject entity, float range)
+    private float CalcRange(GameObject entity)
     {
-        range = Vector2.Distance(entity.transform.position, go.transform.position);
+        float range = Vector2.Distance(entity.transform.position, go.transform.position);
         //Debug.Log(range);
         return range;
     }

@@ -17,7 +17,7 @@ public class RangedAim : StateMachineBehaviour
     {
         go = animator.gameObject;
         player = GameObject.Find("Player");
-        viewRadius = player.GetComponent <RangedEnemy> ().viewRadius;
+        viewRadius = go.GetComponent<RangedEnemy>().viewRadius;
         Weapon = animator.transform.Find("Weapon");
         Head = animator.transform.Find("Head");
         xScale = player.transform.localScale.x;
@@ -30,21 +30,25 @@ public class RangedAim : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (go.GetComponent<SpriteRenderer>().isVisible == false && isFiring == false)
-        {
-            animator.SetBool("isAiming", false);
-        }
+        animator.SetBool("isAiming", isAiming);
+        animator.SetBool("isFiring", isFiring);
 
-        else if (viewRadius == 0)
+        if (viewRadius == 0)
         {
+            if (CalcRange(player) > viewRadius && isFiring == false)
+            {
+                isAiming = false;
 
+            }
+            else TargetEntity(viewRadius);
 
-            TargetEntity(player);
         }
-        else
+        else if (go.GetComponent<SpriteRenderer>().isVisible == false && isFiring == false)
         {
-            TargetEntity(viewRadius);
+            isAiming = false;
+
         }
+        else TargetEntity(player);
     
     }
 
@@ -93,19 +97,18 @@ public class RangedAim : StateMachineBehaviour
             if (go.GetComponent<SpriteRenderer>().isVisible == false && isAiming == true)
             {
                 isAiming = false;
-
             }
-            else if (CalcRange(player, viewRadius) < viewRadius)
+            else if (CalcRange(go) < viewRadius)
             {
-                TargetEntity(player);
+                TargetEntity(go);
             }
         }
 
 
 
-    private float CalcRange(GameObject entity, float range)
+    private float CalcRange(GameObject entity)
     {
-        range = Vector2.Distance(entity.transform.position, go.transform.position);
+        float range = Vector2.Distance(entity.transform.position, go.transform.position);
         //Debug.Log(range);
         return range;
     }

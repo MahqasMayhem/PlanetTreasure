@@ -16,6 +16,7 @@ public class RangedEnemy : MonoBehaviour
     private float spriteScaleX, range;
     private bool lockAim, isAiming;
     private Vector3 rayStart;
+    private Animator anim;
 
     #endregion
     // Start is called before the first frame update
@@ -26,6 +27,7 @@ public class RangedEnemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         //spriteScaleX = this.transform.localScale.x;
         player = GameObject.Find("Player");
+        anim = gameObject.GetComponent<Animator>();
 
         lockAim = false;
         isAiming = false;
@@ -36,122 +38,44 @@ public class RangedEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Weapon.GetComponent<SpriteRenderer>().isVisible == true && lockAim != true)
-        {
-            if (viewRadius == 0)
-            {
-                TargetEntity(player);
-            }
-            else if (viewRadius > 0)
-            {
-                TargetEntity(viewRadius);
-            }
-            else
-            {
-                Debug.LogError("Error: Value out of Range", this);
-            }
-        }
 
     }
 
     void FixedUpdate()
     {
-        if (isAiming == false)
-        {
-            Move();
-            Debug.Log("Trigger Move");
-        }
-        else if (isAiming == true)
-        {
-            isAiming = !isAiming;
-        }
+
     }
 
     #region Control Functions
 
-    private void Move()
+    public void Fire()
     {
-        Debug.Log("move.");
-        if (moveRadius > this.transform.position.x * direction - origin.x)
-            {
-                rb.velocity = new Vector2(speed * direction, rb.velocity.y);
-            }
-        else
-            {
-            ChangeDirection(direction * -1);
-            
-            }
-
-        }
-        
-
-    
-    private void ChangeDirection(int facing)
-    {
-        direction = facing;
-        if (facing == 1)
-        {
-            this.transform.localScale = new Vector3(1.771533f, this.transform.localScale.y, this.transform.localScale.z);
-        }
-        else
-        {
-            this.transform.localScale = new Vector3(-1.771533f, this.transform.localScale.y, this.transform.localScale.z);
-        }
-        
+        StartCoroutine(Attack());
     }
 
-
-    private void TargetEntity(GameObject entity) //Will only be used if viewRadius is 0
+    IEnumerator Attack()
     {
+        anim.SetBool("isFiring", true);
+        Debug.Log("Firing laster!", this);
 
-        isAiming = true;
-        Weapon.transform.right = entity.transform.position - Weapon.transform.position;
-            if (entity.transform.position.x < this.transform.position.x)
-            {
-                ChangeDirection(-1);
-            }
-            else
-            {
-                ChangeDirection(1);
-            }
-        
-        
-    }
+        rayStart = transform.Find("rayOrigin").position;
 
-    private void TargetEntity(float radius) //Will be used if viewRadius is not 0
-    {
 
-        if (this.GetComponent<SpriteRenderer>().isVisible == false && isAiming == true)
+        yield return new WaitForSeconds(4f);
+        if (Physics.Raycast(rayStart, Weapon.transform.right, out RaycastHit hit, Mathf.Infinity))
         {
-            isAiming = false;
-            
-        }
-       else if (CalcRange(player, range) < viewRadius)
-        {
-            TargetEntity(player);
-        }
-    }
-    
+            OnHitObject(hit);
 
+
+        }
+        anim.SetBool("isFiring", false);
+        anim.SetBool("isAiming", false);
+    }
     private float CalcRange(GameObject entity, float range)
     {
         range = Vector2.Distance(entity.transform.position, this.transform.position);
         //Debug.Log(range);
         return range;
-    }
-
-    private void FireBeam(GameObject entity) //TODO: Begin fire sequence. Flash beam, countdown to fire, then fire. Raycast to calculate hit. Reset lockAim and isFiring
-    {
-        lockAim = true;
-        Debug.Log("Firing laser!", this);
-        RaycastHit hit;
-        rayStart = transform.Find("rayOrigin").position;
-
-        if (Physics.Raycast(rayStart, Weapon.transform.right, out hit, Mathf.Infinity))
-        {
-            OnHitObject(hit);
-
-        }
     }
 
     private void OnHitObject(RaycastHit hit)

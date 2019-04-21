@@ -5,7 +5,7 @@ using UnityEngine;
 public class RangedPatrol : StateMachineBehaviour
 {
     private int direction;
-    private Vector3 origin;
+    private Transform origin;
     private float moveRadius, speed, viewRadius, xScale;
     private Rigidbody2D rb;
     private GameObject go,player;
@@ -58,9 +58,14 @@ public class RangedPatrol : StateMachineBehaviour
 
     private void Move()
     {
-        if (moveRadius > go.transform.position.x * direction - origin.x)
+        if (moveRadius > go.transform.position.x * direction - origin.position.x)
         {
             rb.velocity = new Vector2(speed * direction, rb.velocity.y);
+            if (direction == -1)
+            {
+                Weapon.transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else Weapon.transform.rotation = Quaternion.Euler(0, 0, 180);
         }
         else
         {

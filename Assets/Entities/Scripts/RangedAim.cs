@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class RangedAim : StateMachineBehaviour
 {
+    public bool timerFire;
+
     private float viewRadius,xScale;
     private int direction;
     private GameObject go,player;
     private Transform Weapon,Head;
-    private bool isAiming, isFiring, timerFire;
+    private bool isAiming, isFiring;
     private RangedEnemy enemyScript;
+    private Rigidbody2D rb;
 
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -20,16 +23,18 @@ public class RangedAim : StateMachineBehaviour
         viewRadius = go.GetComponent<RangedEnemy>().viewRadius;
         Weapon = animator.transform.Find("Weapon");
         Head = animator.transform.Find("Head");
-        xScale = player.transform.localScale.x;
+        //xScale = enemyScript.enemyFlipScale;
         isAiming = animator.GetBool("isAiming");
         isFiring = animator.GetBool("isFiring");
         timerFire = false;
         enemyScript = go.gameObject.GetComponent<RangedEnemy>();
+        rb = go.GetComponent<Rigidbody2D>();
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        rb.velocity = Vector2.zero;
         animator.SetBool("isAiming", isAiming);
         animator.SetBool("isFiring", isFiring);
 
@@ -48,7 +53,7 @@ public class RangedAim : StateMachineBehaviour
             isAiming = false;
 
         }
-        else TargetEntity(player);
+        else if (!isFiring) TargetEntity(player);
     
     }
 
@@ -57,11 +62,11 @@ public class RangedAim : StateMachineBehaviour
         direction = facing;
         if (facing == 1)
         {
-            go.transform.localScale = new Vector3(xScale, go.transform.localScale.y, go.transform.localScale.z);
+            go.transform.localScale = new Vector3(1, go.transform.localScale.y, go.transform.localScale.z);
         }
         else
         {
-            go.transform.localScale = new Vector3(xScale * -1, go.transform.localScale.y, go.transform.localScale.z);
+            go.transform.localScale = new Vector3(-1, go.transform.localScale.y, go.transform.localScale.z);
         }
 
     }
@@ -70,14 +75,34 @@ public class RangedAim : StateMachineBehaviour
         private void TargetEntity(GameObject entity) //Will only be used if viewRadius is 0
         {
 
-            
-            Weapon.transform.right = entity.transform.position - Weapon.transform.position;
-        Head.transform.right = entity.transform.position - Head.transform.position;
-        if (timerFire == false)
+        /*     
+             Weapon.transform.right = entity.transform.position - Weapon.transform.position;
+         Head.transform.right = entity.transform.position - Head.transform.position;
+         */
+
+        #region Rotate Weapon
+
+
+            Vector2 offset = new Vector2(entity.transform.position.x - Weapon.transform.position.x, entity.transform.position.y - Weapon.transform.position.y);
+
+            if (direction == 1 && !isFiring)
+            {
+                float angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+                Weapon.transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
+            else if (!isFiring)
+            {
+                float angle = Mathf.Atan2(offset.y * -1, offset.x * -1) * Mathf.Rad2Deg;
+                Weapon.transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
+
+        #endregion
+
+        if (!timerFire)
         {
             timerFire = true;
             Debug.Log("Preparing to fire!", go);
-            enemyScript.Invoke("Fire", 4f);
+            enemyScript.Invoke("Fire", 2.5f);
         }
             if (entity.transform.position.x < go.transform.position.x)
             {
@@ -94,7 +119,7 @@ public class RangedAim : StateMachineBehaviour
         private void TargetEntity(float radius) //Will be used if viewRadius is not 0
         {
 
-            if (go.GetComponent<SpriteRenderer>().isVisible == false && isAiming == true)
+            if (go.GetComponent<SpriteRenderer>().isVisible == false && !isFiring)
             {
                 isAiming = false;
             }

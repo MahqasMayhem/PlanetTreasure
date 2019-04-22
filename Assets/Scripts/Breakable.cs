@@ -15,4 +15,9 @@ public class Breakable : MonoBehaviour
     {
         
     }
+
+    public void OnDamage()
+    {
+        this.gameObject.SetActive(false);
+    }
 }

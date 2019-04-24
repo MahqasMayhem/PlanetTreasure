@@ -48,7 +48,7 @@ public class ExplodingBarrel : MonoBehaviour
             if (!hit.collider.gameObject.CompareTag("Player"))
             {
                 hit.collider.gameObject.BroadcastMessage("OnDamage");
-                hit.collider.gameObject.SetActive(false);
+                
             }
             else
             {

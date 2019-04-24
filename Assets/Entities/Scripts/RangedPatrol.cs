@@ -25,6 +25,8 @@ public class RangedPatrol : StateMachineBehaviour
         speed = go.GetComponent<RangedEnemy>().speed;
         rb = go.GetComponent<Rigidbody2D>();
         xScale = go.transform.localScale.x;
+
+        ChangeDirection(1);
         
     }
 
@@ -60,12 +62,9 @@ public class RangedPatrol : StateMachineBehaviour
     {
         if (moveRadius > go.transform.position.x * direction - origin.position.x)
         {
+
+
             rb.velocity = new Vector2(speed * direction, rb.velocity.y);
-            if (direction == -1)
-            {
-                Weapon.transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            else Weapon.transform.rotation = Quaternion.Euler(0, 0, 180);
         }
         else
         {
@@ -78,11 +77,11 @@ public class RangedPatrol : StateMachineBehaviour
         direction = facing;
         if (facing == 1)
         {
-            go.transform.localScale = new Vector3(xScale, go.transform.localScale.y, go.transform.localScale.z);
+            go.transform.localScale = new Vector3(1, go.transform.localScale.y, go.transform.localScale.z);
         }
         else
         {
-            go.transform.localScale = new Vector3(xScale * -1, go.transform.localScale.y, go.transform.localScale.z);
+            go.transform.localScale = new Vector3(-1, go.transform.localScale.y, go.transform.localScale.z);
         }
 
     }

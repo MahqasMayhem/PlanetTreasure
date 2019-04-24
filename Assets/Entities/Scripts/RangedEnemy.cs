@@ -14,7 +14,7 @@ public class RangedEnemy : MonoBehaviour
     private Vector3 target;
     private GameObject Weapon, BeamOrigin, BeamTargeting, BeamFiring;
     private float spriteScaleX, range;
-    public Animator anim;
+    private Animator anim;
 
     #endregion
     // Start is called before the first frame update
@@ -47,7 +47,10 @@ public class RangedEnemy : MonoBehaviour
 
     public void Fire()
     {
-        StartCoroutine(Attack());
+        if (!anim.GetBool("isFiring"))
+        {
+            StartCoroutine(Attack());
+        }
     }
 
     IEnumerator Attack()

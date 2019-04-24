@@ -57,6 +57,17 @@ public class RangedAim : StateMachineBehaviour
     
     }
 
+    private void ResetWeapon()
+    {
+        if (direction == -1)
+        {
+            Weapon.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else
+        {
+            Weapon.transform.rotation = Quaternion.Euler(0, 0, 180);
+        }
+    }
     private void ChangeDirection(int facing)
     {
         direction = facing;
@@ -89,11 +100,13 @@ public class RangedAim : StateMachineBehaviour
             {
                 float angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
                 Weapon.transform.rotation = Quaternion.Euler(0, 0, angle);
+                Head.transform.rotation = Quaternion.Euler(0, 0, angle);
             }
             else if (!isFiring)
             {
                 float angle = Mathf.Atan2(offset.y * -1, offset.x * -1) * Mathf.Rad2Deg;
                 Weapon.transform.rotation = Quaternion.Euler(0, 0, angle);
+                Head.transform.rotation = Quaternion.Euler(0, 0, angle);
             }
 
         #endregion

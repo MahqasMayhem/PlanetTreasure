@@ -9,7 +9,7 @@ override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo
     {
         animator.SetBool("isFiring", true);
         GameObject go = animator.gameObject;
-        go.GetComponent<RangedEnemy>().Invoke("Fire",1f);
+        go.GetComponent<RangedEnemy>().Invoke("Target",0.1f);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

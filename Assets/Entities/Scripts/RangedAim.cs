@@ -13,6 +13,7 @@ public class RangedAim : StateMachineBehaviour
     private bool isAiming, isFiring;
     private RangedEnemy enemyScript;
     private Rigidbody2D rb;
+    private Animator anim;
 
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -29,6 +30,7 @@ public class RangedAim : StateMachineBehaviour
         timerFire = false;
         enemyScript = go.gameObject.GetComponent<RangedEnemy>();
         rb = go.GetComponent<Rigidbody2D>();
+        anim = animator;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -38,11 +40,12 @@ public class RangedAim : StateMachineBehaviour
         animator.SetBool("isAiming", isAiming);
         animator.SetBool("isFiring", isFiring);
 
-        if (viewRadius == 0)
+        if (viewRadius != 0)
         {
             if (CalcRange(player) > viewRadius && isFiring == false)
             {
                 isAiming = false;
+                ResetWeapon();
 
             }
             else TargetEntity(viewRadius);
@@ -51,7 +54,7 @@ public class RangedAim : StateMachineBehaviour
         else if (go.GetComponent<SpriteRenderer>().isVisible == false && isFiring == false)
         {
             isAiming = false;
-
+            ResetWeapon();
         }
         else if (!isFiring) TargetEntity(player);
     
@@ -62,10 +65,12 @@ public class RangedAim : StateMachineBehaviour
         if (direction == -1)
         {
             Weapon.transform.rotation = Quaternion.Euler(0, 0, 0);
+            Head.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         else
         {
             Weapon.transform.rotation = Quaternion.Euler(0, 0, 180);
+            Head.transform.rotation = Quaternion.Euler(0, 0, 180);
         }
     }
     private void ChangeDirection(int facing)
@@ -115,7 +120,8 @@ public class RangedAim : StateMachineBehaviour
         {
             timerFire = true;
             Debug.Log("Preparing to fire!", go);
-            enemyScript.Invoke("Fire", 2.5f);
+            anim.SetTrigger("setFiring");
+            //enemyScript.Invoke("Target", 2.5f);
         }
             if (entity.transform.position.x < go.transform.position.x)
             {
@@ -135,6 +141,7 @@ public class RangedAim : StateMachineBehaviour
             if (go.GetComponent<SpriteRenderer>().isVisible == false && !isFiring)
             {
                 isAiming = false;
+                ResetWeapon();
             }
             else if (CalcRange(go) < viewRadius)
             {

@@ -14,13 +14,15 @@ public class RangedEnemy : MonoBehaviour
     private Vector3 target;
     private GameObject Weapon, BeamOrigin, BeamTargeting, BeamFiring;
     private float spriteScaleX, range;
-    public Animator anim;
+    private Animator anim;
+    private AudioSource sound;
 
     #endregion
     // Start is called before the first frame update
     void Start()
     {
         anim = gameObject.GetComponent<Animator>();
+        sound = gameObject.GetComponent<AudioSource>();
         Weapon = gameObject.transform.Find("Weapon").gameObject;
         BeamOrigin = Weapon.transform.Find("BeamOrigin").gameObject;
         BeamTargeting = Weapon.transform.Find("BeamTargeting").gameObject;
@@ -45,11 +47,45 @@ public class RangedEnemy : MonoBehaviour
     */
     #region Control Functions
 
-    public void Fire()
+    public void Target()
     {
-        StartCoroutine(Attack());
+        if (!anim.GetBool("isFiring"))
+        {
+            //anim.SetBool("isFiring", true);
+            //anim.SetTrigger("setFiring");
+            Debug.Log("Targeting laser!", this);
+
+            BeamTargeting.SetActive(true);
+            //StartCoroutine(Attack());
+            //anim.SetTrigger("setFiring");
+            //anim.SetBool("isFiring", true);
+            Invoke("Fire", 2f);
+        }
     }
 
+    public void Fire()
+    {
+        Debug.Log("Firing laser!", this);
+        BeamTargeting.SetActive(false);
+        BeamFiring.SetActive(true);
+        sound.Play();
+        RaycastHit2D hit = Physics2D.Raycast(BeamOrigin.transform.position, Vector2.right, 30, entLayerMask);
+        if (hit.collider != null)
+        {
+            OnHitObject(hit);
+        }
+        else
+        {
+            Debug.Log("Did not hit", this);
+        }
+        Invoke("ExitFiringState", 1f);
+    }
+    private void ExitFiringState()
+    {
+        BeamFiring.SetActive(false);
+        anim.SetBool("isFiring", false);
+        anim.SetTrigger("firingComplete");
+    }
     IEnumerator Attack()
     {
         anim.SetBool("isFiring", true);

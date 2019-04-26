@@ -15,6 +15,7 @@ public class PlayerManager : MonoBehaviour
 
     public Text CountText;
     private int count;
+    public Text WinText;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,7 @@ public class PlayerManager : MonoBehaviour
         uniqueCollectibles = new List<GameObject>();
         count = 0;
         SetCountText ();
+        WinText.text = "";
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -40,13 +42,14 @@ public class PlayerManager : MonoBehaviour
                     
                 }
             }
-            count = count + 1;
         }
         else if (other.gameObject.CompareTag("Pickup"))
         {
             other.gameObject.SetActive(false);
             count = count + 1;
+
         }
+        SetCountText();
     }
 
     void UpdateCollectibles(GameObject collectible)
@@ -67,6 +70,10 @@ public class PlayerManager : MonoBehaviour
     void SetCountText ()
     {
         CountText.text = "count: " + count.ToString();
+        if (count >= 50)
+        {
+            WinText.text = "Balanced, as all games should be........";
+        }
     }
 
     public void OnDamage()

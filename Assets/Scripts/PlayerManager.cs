@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -12,18 +13,23 @@ public class PlayerManager : MonoBehaviour
     private List<GameObject> uniqueCollectibles;
     #endregion
 
+    public Text CountText;
+    private int count;
+
     // Start is called before the first frame update
     void Start()
     {
         Time.timeScale = 1;
         uniqueCollectibles = new List<GameObject>();
-        score = 0;
+        count = 0;
+        SetCountText ();
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Unique Pick Up"))
         {
+
             foreach (GameObject collectible in GameObject.FindGameObjectsWithTag("Unique Pick Up"))
             {
                 if (other.gameObject == collectible)
@@ -31,13 +37,15 @@ public class PlayerManager : MonoBehaviour
                     Debug.Log("Player obtained a unique item!", collectible);
                     UpdateCollectibles(collectible);
                     collectible.SetActive(false);
+                    
                 }
             }
+            count = count + 1;
         }
         else if (other.gameObject.CompareTag("Pickup"))
         {
-            score++;
             other.gameObject.SetActive(false);
+            count = count + 1;
         }
     }
 
@@ -48,12 +56,17 @@ public class PlayerManager : MonoBehaviour
             Debug.LogWarning("Object is null!");
         }
         uniqueCollectibles.Add(collectible);
-        score += 10;
+        count += 10;
         if (uniqueCollectibles.Count >= 5)
         {
             Debug.Log("All collectibles acquired");
 
         }
+    }
+
+    void SetCountText ()
+    {
+        CountText.text = "count: " + count.ToString();
     }
 
     public void OnDamage()

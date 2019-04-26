@@ -10,8 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1653453004332231514}
   - component: {fileID: 13822562894061961}
+<<<<<<< Updated upstream
   - component: {fileID: 7160061589171525697}
   - component: {fileID: 5841914331070302813}
+=======
+  - component: {fileID: 5562437077266164160}
+  - component: {fileID: 6313106377554356603}
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: 0.5 by 1 platform (Broken)
   m_TagString: Untagged
@@ -81,7 +86,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+<<<<<<< Updated upstream
 --- !u!114 &7160061589171525697
+=======
+--- !u!114 &5562437077266164160
+>>>>>>> Stashed changes
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,7 +102,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9443baceb2821f440878cabd40e78bd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< Updated upstream
 --- !u!61 &5841914331070302813
+=======
+--- !u!61 &6313106377554356603
+>>>>>>> Stashed changes
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

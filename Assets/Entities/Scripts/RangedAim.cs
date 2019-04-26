@@ -42,13 +42,13 @@ public class RangedAim : StateMachineBehaviour
 
         if (viewRadius != 0)
         {
-            if (CalcRange(player) > viewRadius && isFiring == false)
+            if (CalcRange(player) > viewRadius)
             {
                 isAiming = false;
                 ResetWeapon();
 
             }
-            else TargetEntity(viewRadius);
+            else TargetEntity(player);
 
         }
         else if (go.GetComponent<SpriteRenderer>().isVisible == false && isFiring == false)
@@ -88,8 +88,8 @@ public class RangedAim : StateMachineBehaviour
     }
 
 
-        private void TargetEntity(GameObject entity) //Will only be used if viewRadius is 0
-        {
+    private void TargetEntity(GameObject entity) //Will only be used if viewRadius is 0
+    {
 
         /*     
              Weapon.transform.right = entity.transform.position - Weapon.transform.position;
@@ -99,59 +99,43 @@ public class RangedAim : StateMachineBehaviour
         #region Rotate Weapon
 
 
-            Vector2 offset = new Vector2(entity.transform.position.x - Weapon.transform.position.x, entity.transform.position.y - Weapon.transform.position.y);
+        Vector2 offset = new Vector2(entity.transform.position.x - Weapon.transform.position.x, entity.transform.position.y - Weapon.transform.position.y);
 
-            if (direction == 1 && !isFiring)
-            {
-                float angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
-                Weapon.transform.rotation = Quaternion.Euler(0, 0, angle);
-                Head.transform.rotation = Quaternion.Euler(0, 0, angle);
-            }
-            else if (!isFiring)
-            {
-                float angle = Mathf.Atan2(offset.y * -1, offset.x * -1) * Mathf.Rad2Deg;
-                Weapon.transform.rotation = Quaternion.Euler(0, 0, angle);
-                Head.transform.rotation = Quaternion.Euler(0, 0, angle);
-            }
+        if (direction == 1 && !isFiring)
+        {
+            float angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+            Weapon.transform.rotation = Quaternion.Euler(0, 0, angle);
+            Head.transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+        else if (!isFiring)
+        {
+            float angle = Mathf.Atan2(offset.y * -1, offset.x * -1) * Mathf.Rad2Deg;
+            Weapon.transform.rotation = Quaternion.Euler(0, 0, angle);
+            Head.transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
 
         #endregion
 
+        if (entity.transform.position.x < go.transform.position.x)
+        {
+            ChangeDirection(-1);
+        }
+        else
+        {
+            ChangeDirection(1);
+        }
         if (!timerFire)
         {
             timerFire = true;
             Debug.Log("Preparing to fire!", go);
             anim.SetTrigger("setFiring");
             //enemyScript.Invoke("Target", 2.5f);
-        }
-            if (entity.transform.position.x < go.transform.position.x)
-            {
-                ChangeDirection(-1);
-            }
-            else
-            {
-                ChangeDirection(1);
-            }
-
 
         }
-
-        private void TargetEntity(float radius) //Will be used if viewRadius is not 0
-        {
-
-            if (go.GetComponent<SpriteRenderer>().isVisible == false && !isFiring)
-            {
-                isAiming = false;
-                ResetWeapon();
-            }
-            else if (CalcRange(go) < viewRadius)
-            {
-                TargetEntity(go);
-            }
-        }
+    }
 
 
-
-    private float CalcRange(GameObject entity)
+        private float CalcRange(GameObject entity)
     {
         float range = Vector2.Distance(entity.transform.position, go.transform.position);
         //Debug.Log(range);

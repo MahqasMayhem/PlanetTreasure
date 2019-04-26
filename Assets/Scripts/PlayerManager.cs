@@ -65,6 +65,15 @@ public class PlayerManager : MonoBehaviour
         else lives -= 1;
     }
 
+    public void OnDamage(int damage)
+    {
+        lives -= damage;
+        if (lives <= 0)
+        {
+            StartCoroutine("OnDeath");
+        }
+    }
+
     private IEnumerator OnDeath()
     {
         Time.timeScale = 0;

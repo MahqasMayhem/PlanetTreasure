@@ -7,9 +7,14 @@ public class RangedFire : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool("isFiring", true);
         GameObject go = animator.gameObject;
-        go.GetComponent<RangedEnemy>().Invoke("Target",0.1f);
+        if (!animator.GetBool("isFiring"))
+        {
+            go.GetComponent<RangedEnemy>().Invoke("Target", 0.1f);
+            animator.SetBool("isFiring", true);
+        }
+       
+        
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
